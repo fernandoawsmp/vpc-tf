@@ -28,10 +28,8 @@ variable "vpc" {
     name                     = string
     cidr_block               = string
     internet_gateway_name    = string
-    nat_gateway_name         = string
     public_route_table_name  = string
     private_route_table_name = string
-    nat_gateway_eip_name     = string
     public_subnets = list(object({
       name                    = string
       cidr_block              = string
@@ -45,7 +43,6 @@ variable "vpc" {
       map_public_ip_on_launch = bool
     }))
   })
-
   default = {
     cidr_block               = "10.0.0.0/24"
     name                     = "vpc-projeto3"
