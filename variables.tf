@@ -18,7 +18,7 @@ variable "aws_provider" {
   default = {
     region = "us-east-1"
     assume_role = {
-      role_arn = "arn:aws:iam::975050217683:role/terraform-projeto3"
+      role_arn = "arn:aws:iam::148761658767:role/TerraformAssumeRole"
     }
   }
 }
@@ -33,7 +33,7 @@ variable "vpc" {
     public_subnets = list(object({
       name                    = string
       cidr_block              = string
-      availability_zone       = string
+      availability_zone       = string     
       map_public_ip_on_launch = bool
     })),
     private_subnets = list(object({
@@ -52,7 +52,7 @@ variable "vpc" {
     public_subnets = [{
       name                    = "public-subnet-us-east-1a"
       cidr_block              = "10.0.0.0/26"
-      availability_zone       = "us-east-1a"
+      availability_zone       = "us-east-1a"    
       map_public_ip_on_launch = true
       },
       {
@@ -74,4 +74,9 @@ variable "vpc" {
         map_public_ip_on_launch = false
     }]
   }
+}
+
+variable "aws_instance_name" {
+  description = "Name of the EC2 instance"
+  default     = "ec2-n8n"
 }
