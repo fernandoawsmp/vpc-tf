@@ -10,6 +10,7 @@ output "private_subnet_ids" {
   value = aws_subnet.private.*.id
 }
 
-output "rds" {
-  value = aws_db_instance.PostgreSQL.address
+output "instance_ip" {
+  description = "Ip da instancia ec2-n8n"
+  value       = aws_instance.this.public_ip
 }
