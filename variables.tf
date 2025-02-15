@@ -18,7 +18,7 @@ variable "aws_provider" {
   default = {
     region = "us-east-1"
     assume_role = {
-      role_arn = "arn:aws:iam::148761658767:role/TerraformAssumeRole"
+      role_arn = "arn:aws:iam::975050217683:role/terraform-projeto3"
     }
   }
 }
