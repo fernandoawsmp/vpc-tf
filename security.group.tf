@@ -5,18 +5,11 @@ resource "aws_security_group" "this" {
 
   ingress {
     description = "acesso para o mundo n8n"
-    from_port   = 5678
-    to_port     = 5678
+    from_port   = 443
+    to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-  }
-   ingress {
-    description = "acesso para o mundo redis"
-    from_port   = 6379
-    to_port     = 6379
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  } 
   egress {
     from_port   = 0
     to_port     = 0
