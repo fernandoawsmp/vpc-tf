@@ -1,6 +1,6 @@
 resource "aws_instance" "this" {
-  ami           = "ami-0b29c89c15cfb8a6d"
-  instance_type = "t4g.small"  
+  ami                         = "ami-0b29c89c15cfb8a6d"
+  instance_type               = "t4g.small"
   subnet_id                   = aws_subnet.public[0].id
   associate_public_ip_address = true
   vpc_security_group_ids      = [aws_security_group.this.id]
