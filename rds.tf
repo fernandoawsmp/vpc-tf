@@ -4,9 +4,9 @@ resource "aws_db_instance" "PostgreSQL" {
   allocated_storage      = 20
   engine                 = "postgres"
   instance_class         = "db.t4g.micro"
-  db_name                = "n8nmsgdb"
+  db_name                = "n8n"
   username               = "postgres"
-  password               = "m3ns4g3m"
+  password               = "n8n"
   db_subnet_group_name   = aws_db_subnet_group.rds-sub.name
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
   skip_final_snapshot    = true
