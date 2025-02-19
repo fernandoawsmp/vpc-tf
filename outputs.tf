@@ -14,3 +14,7 @@ output "instance_ip" {
   description = "Ip da instancia ec2-n8n"
   value       = aws_instance.this.public_ip
 }
+output "rds_endpoint" {
+  description = "Endpoint n8n"
+  value = aws_db_instance..endpoint
+}
