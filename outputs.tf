@@ -16,5 +16,5 @@ output "instance_ip" {
 }
 output "rds_endpoint" {
   description = "Endpoint n8n"
-  value = aws_db_instance..endpoint
+  value = aws_db_instance.N8N.endpoint
 }
