@@ -1,6 +1,6 @@
 # Criar uma instância RDS PostgreSQL
 resource "aws_db_instance" "N8N" {
-  identifier             = "postgres-db"
+  identifier             = "n8n"
   allocated_storage      = 20
   engine                 = "postgres"
   instance_class         = "db.t4g.micro"
