@@ -15,7 +15,12 @@ output "instance_ip" {
   value       = aws_instance.this.public_ip
 }
 
-output "rds_endpoint" {
-  value = aws_db_instance.n8n_db.endpoint
-  description = "Endpoint do RDS PostgreSQL"
+output "sqs_queue_url" {
+  description = "URL da fila SQS"
+  value       = aws_sqs_queue.n8n_sqs.url
+}
+
+output "sqs_queue_arn" {
+  description = "ARN da fila SQS"
+  value       = aws_sqs_queue.n8n_sqs.arn
 }

@@ -130,3 +130,8 @@ variable "rds_skip_final_snapshot" {
   type        = bool
   default     = true
 }
+
+variable "sqs_name" {
+  description = "Nome da fila SQS"
+  default     = "n8n"
+}
