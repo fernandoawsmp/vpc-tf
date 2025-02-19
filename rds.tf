@@ -1,5 +1,5 @@
 # Criar uma instância RDS PostgreSQL
-resource "aws_db_instance" "N8N" {
+resource "aws_db_instance" "n8n" {
   identifier             = "n8n"
   allocated_storage      = 20
   engine                 = "postgres"
