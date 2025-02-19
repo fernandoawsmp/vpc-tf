@@ -1,4 +1,4 @@
-resource "aws_db_instance" "PostgreSQL" {
+resource "aws_db_instance" "this" {
   identifier              = var.rds_identifier
   allocated_storage       = var.rds_allocated_storage
   engine                  = var.rds_engine
