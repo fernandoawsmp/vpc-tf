@@ -80,3 +80,53 @@ variable "aws_instance_name" {
   description = "Name of the EC2 instance"
   default     = "ec2-n8n"
 }
+
+# Variáveis do RDS
+variable "rds_identifier" {
+  description = "Identificador da instância RDS"
+  type        = string
+  default     = "n8n"
+}
+
+variable "rds_allocated_storage" {
+  description = "Espaço alocado para o RDS (em GB)"
+  type        = number
+  default     = 20
+}
+
+variable "rds_engine" {
+  description = "Engine do RDS"
+  type        = string
+  default     = "postgres"
+}
+
+variable "rds_instance_class" {
+  description = "Classe da instância do RDS"
+  type        = string
+  default     = "db.t4g.small"
+}
+
+variable "rds_db_name" {
+  description = "Nome do banco de dados"
+  type        = string
+  default     = "n8n"
+}
+
+variable "rds_username" {
+  description = "Usuário do banco de dados"
+  type        = string
+  default     = "postgres"
+}
+
+variable "rds_password" {
+  description = "Senha do banco de dados"
+  type        = string
+  sensitive   = true
+  default     = "n8n"
+}
+
+variable "rds_skip_final_snapshot" {
+  description = "Pular ou não o snapshot final na deleção"
+  type        = bool
+  default     = true
+}
