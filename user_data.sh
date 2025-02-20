@@ -40,26 +40,50 @@ cd /home/ec2-user/n8n
 # Define permissões corretas
 sudo chown -R $USER:$USER /home/ec2-user/n8n
 
+# Captura o endpoint do RDS vindo do Terraform (substitua pela variável real do Terraform)
+DB_HOST=$(terraform output -raw rds_endpoint)
+
+# Cria um arquivo init-data.sh para inicializar o banco de dados
+cat <<EOF > init-data.sh
+#!/bin/bash
+set -e;
+
+
+if [ -n "\${POSTGRES_NON_ROOT_USER:-}" ] && [ -n "\${POSTGRES_NON_ROOT_PASSWORD:-}" ]; then
+	psql -v ON_ERROR_STOP=1 --username "\$POSTGRES_USER" --dbname "\$POSTGRES_DB" <<-EOSQL
+		CREATE USER \${POSTGRES_NON_ROOT_USER} WITH PASSWORD '\${POSTGRES_NON_ROOT_PASSWORD}';
+		GRANT ALL PRIVILEGES ON DATABASE \${POSTGRES_DB} TO \POSTGRES_NON_ROOT_USER};
+		GRANT CREATE ON SCHEMA public TO \${POSTGRES_NON_ROOT_USER};
+	EOSQL
+else
+	echo "SETUP INFO: No Environment variables given!"
+fi
+EOF
+
+# Define permissões corretas
+sudo chmod +x init-data.sh
+
 # Cria um arquivo .env com variáveis sensíveis (modifique conforme necessário)
 cat <<EOF > .env
+# n8n
+N8N_ENCRYPTION_KEY=175da018a5f60d14b09088e53d47a547
 SSL_EMAIL=alisrios@alisriosti.com.br
-SUBDOMAIN=n8n
+SUBDOMAIN=n8n2
 DOMAIN_NAME=alisriosti.com.br
 GENERIC_TIMEZONE=America/Sao_Paulo
 # Configurações do RDS PostgreSQL
-DB_HOST=seu-endpoint.rds.amazonaws.com
-DB_PORT=5432
-DB_USER=seu-usuario
-DB_PASSWORD=sua-senha-segura
-DB_NAME=n8n-database
+DB_POSTGRESDB_HOST=n8n.c9qkwqag6uxj.us-east-1.rds.amazonaws.com
+DB_POSTGRESDB_PORT=5432
+DB_POSTGRESDB_DATABASE=n8n
+DB_POSTGRESDB_USER=postgres
+DB_POSTGRESDB_PASSWORD=postgres
 EOF
 
 # Cria o arquivo docker-compose.yml
 cat <<EOF > docker-compose.yml
-version: "3.7"
-
 services:
   traefik:
+    container_name: traefik-proxy
     image: "traefik"
     restart: always
     command:
@@ -80,9 +104,12 @@ services:
     volumes:
       - traefik_data:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock:ro
-
+    networks:
+      - n8n-network
+      
   n8n:
-    image: docker.n8n.io/n8nio/n8n
+    container_name: n8n
+    image: n8nio/n8n:latest
     restart: always
     ports:
       - "127.0.0.1:5678:5678"
@@ -100,20 +127,35 @@ services:
       - traefik.http.middlewares.n8n.headers.SSLHost=\${DOMAIN_NAME}
       - traefik.http.middlewares.n8n.headers.STSIncludeSubdomains=true
       - traefik.http.middlewares.n8n.headers.STSPreload=true
-      - traefik.http.routers.n8n.middlewares=n8n@docker
+      - traefik.http.routers.n8n.middlewares=n8n@docker      
     environment:
       - N8N_HOST=\${SUBDOMAIN}.\${DOMAIN_NAME}
       - N8N_PORT=5678
       - N8N_PROTOCOL=https
       - NODE_ENV=production
       - WEBHOOK_URL=https://\${SUBDOMAIN}.\${DOMAIN_NAME}/
-      - GENERIC_TIMEZONE=\${GENERIC_TIMEZONE}
+      - GENERIC_TIMEZONE=\${GENERIC_TIMEZONE}      
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=\${DB_POSTGRESDB_HOST}
+      - DB_POSTGRESDB_PORT=\${DB_POSTGRESDB_PORT}
+      - DB_POSTGRESDB_DATABASE=\${DB_POSTGRESDB_DATABASE}
+      - DB_POSTGRESDB_USER=\${DB_POSTGRESDB_USER}
+      - DB_POSTGRESDB_PASSWORD=\${DB_POSTGRESDB_PASSWORD}
+      - DB_POSTGRESDB_SSL_REJECT_UNAUTHORIZED=false
+      - N8N_ENCRYPTION_KEY=\${N8N_ENCRYPTION_KEY}
+      - DB_POSTGRESDB_CONNECTION_TIMEOUT=60000
     volumes:
       - n8n_data:/home/node/.n8n
+    networks:
+      - n8n-network 
 
 volumes:
-  traefik_data:    
-  n8n_data:    
+  traefik_data:
+  n8n_data:
+
+networks:
+  n8n-network:
+    driver: bridge    
 EOF
 
 # Inicia os containers
