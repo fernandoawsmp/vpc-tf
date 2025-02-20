@@ -24,3 +24,8 @@ output "sqs_queue_arn" {
   description = "ARN da fila SQS"
   value       = aws_sqs_queue.n8n_sqs.arn
 }
+
+output "rds_endpoint" {
+  description = "Endpoint do RDS"
+  value       = aws_db_instance.this.endpoint
+}
