@@ -33,7 +33,7 @@ variable "vpc" {
     public_subnets = list(object({
       name                    = string
       cidr_block              = string
-      availability_zone       = string     
+      availability_zone       = string
       map_public_ip_on_launch = bool
     })),
     private_subnets = list(object({
@@ -52,7 +52,7 @@ variable "vpc" {
     public_subnets = [{
       name                    = "public-subnet-us-east-1a"
       cidr_block              = "10.0.0.0/26"
-      availability_zone       = "us-east-1a"    
+      availability_zone       = "us-east-1a"
       map_public_ip_on_launch = true
       },
       {
@@ -122,7 +122,7 @@ variable "rds_password" {
   description = "Senha do banco de dados"
   type        = string
   sensitive   = true
-  default     = "n8n"
+  default     = "postgres"
 }
 
 variable "rds_skip_final_snapshot" {

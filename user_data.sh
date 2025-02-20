@@ -40,30 +40,6 @@ cd /home/ec2-user/n8n
 # Define permissões corretas
 sudo chown -R $USER:$USER /home/ec2-user/n8n
 
-# Captura o endpoint do RDS vindo do Terraform (substitua pela variável real do Terraform)
-DB_HOST=$(terraform output -raw rds_endpoint)
-
-# Cria um arquivo init-data.sh para inicializar o banco de dados
-cat <<EOF > init-data.sh
-#!/bin/bash
-set -e;
-
-
-if [ -n "\${POSTGRES_NON_ROOT_USER:-}" ] && [ -n "\${POSTGRES_NON_ROOT_PASSWORD:-}" ]; then
-	psql -v ON_ERROR_STOP=1 --username "\$POSTGRES_USER" --dbname "\$POSTGRES_DB" <<-EOSQL
-		CREATE USER \${POSTGRES_NON_ROOT_USER} WITH PASSWORD '\${POSTGRES_NON_ROOT_PASSWORD}';
-		GRANT ALL PRIVILEGES ON DATABASE \${POSTGRES_DB} TO \POSTGRES_NON_ROOT_USER};
-		GRANT CREATE ON SCHEMA public TO \${POSTGRES_NON_ROOT_USER};
-	EOSQL
-else
-	echo "SETUP INFO: No Environment variables given!"
-fi
-EOF
-
-# Define permissões corretas
-sudo chmod +x init-data.sh
-
-
 # Cria um arquivo .env com variáveis sensíveis (modifique conforme necessário)
 cat <<EOF > .env
 # n8n
