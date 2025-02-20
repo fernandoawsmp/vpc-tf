@@ -19,4 +19,5 @@ resource "aws_instance" "this" {
     Name     = var.aws_instance_name
     ambiente = "producao"
   }
+  depends_on = [aws_db_instance.this]
 }

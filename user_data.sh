@@ -63,21 +63,28 @@ EOF
 # Define permissões corretas
 sudo chmod +x init-data.sh
 
+
 # Cria um arquivo .env com variáveis sensíveis (modifique conforme necessário)
 cat <<EOF > .env
 # n8n
 N8N_ENCRYPTION_KEY=175da018a5f60d14b09088e53d47a547
 SSL_EMAIL=alisrios@alisriosti.com.br
-SUBDOMAIN=n8n2
+SUBDOMAIN=n8n3
 DOMAIN_NAME=alisriosti.com.br
 GENERIC_TIMEZONE=America/Sao_Paulo
 # Configurações do RDS PostgreSQL
-DB_POSTGRESDB_HOST=n8n.c9qkwqag6uxj.us-east-1.rds.amazonaws.com
+DB_POSTGRESDB_HOST=
 DB_POSTGRESDB_PORT=5432
 DB_POSTGRESDB_DATABASE=n8n
 DB_POSTGRESDB_USER=postgres
 DB_POSTGRESDB_PASSWORD=postgres
 EOF
+
+# Endpoint do RDS começa com 'n8n'
+endpoint=$(aws rds describe-db-instances --query "DBInstances[?starts_with(DBInstanceIdentifier, 'n8n')].Endpoint.Address" --output text)
+
+# Atualiza o arquivo .env com o endpoint do RDS
+sudo sed -i "s|^DB_POSTGRESDB_HOST=.*|DB_POSTGRESDB_HOST=$endpoint|" .env
 
 # Cria o arquivo docker-compose.yml
 cat <<EOF > docker-compose.yml
