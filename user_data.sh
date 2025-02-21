@@ -45,8 +45,8 @@ cat <<EOF > .env
 # n8n
 N8N_ENCRYPTION_KEY=175da018a5f60d14b09088e53d47a547
 SSL_EMAIL=alisrios@alisriosti.com.br
-SUBDOMAIN=n8n3
-DOMAIN_NAME=alisriosti.com.br
+SUBDOMAIN=n8n
+DOMAIN_NAME=jovando.com.br
 GENERIC_TIMEZONE=America/Sao_Paulo
 # Configurações do RDS PostgreSQL
 DB_POSTGRESDB_HOST=
