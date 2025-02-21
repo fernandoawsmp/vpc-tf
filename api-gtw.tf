@@ -46,7 +46,7 @@ resource "aws_api_gateway_deployment" "webhook_deployment" {
 # Criar um Stage "dev"
 
 resource "aws_api_gateway_stage" "webhook_stage" {
-  stage_name    = "dev"
+  stage_name    = "PRD"
   rest_api_id   = aws_api_gateway_rest_api.webhook_api.id
   deployment_id = aws_api_gateway_deployment.webhook_deployment.id
 }
@@ -91,12 +91,35 @@ resource "aws_iam_role" "lambda_role" {
 EOF
 }
 
+# Criar a política de permissões para SQS
+resource "aws_iam_policy" "sqs_policy" {
+  name        = "LambdaSQSPolicy"
+  description = "Permite que a Lambda acesse o SQS"
+
+  policy = <<EOF
+{
+   "Version": "2012-10-17",
+   "Statement": [
+       {
+         "Effect": "Allow",
+         "Action": "sqs:SendMessage",
+         "Resource": "arn:aws:sqs:us-east-1:975050217683:n8n"
+       }
+   ]
+}
+EOF
+}
+
 # Associar permissões básicas à Lambda
 resource "aws_iam_role_policy_attachment" "lambda_policy" {
   role       = aws_iam_role.lambda_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
+resource "aws_iam_role_policy_attachment" "sqs_policy" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = aws_iam_policy.sqs_policy.arn
+}
 
 output "webhook_url" {
   value       = "https://${aws_api_gateway_rest_api.webhook_api.id}.execute-api.${var.aws_provider.region}.amazonaws.com/${aws_api_gateway_stage.webhook_stage.stage_name}/webhook"
