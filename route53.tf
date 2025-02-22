@@ -7,5 +7,5 @@ resource "aws_route53_record" "this" {
   name    = "n8n.jovando.com.br"
   type    = "A"
   ttl     = 300
-  records = [aws_instance.this.public_ip]
+  records = [aws_eip.this.public_ip]
 }
