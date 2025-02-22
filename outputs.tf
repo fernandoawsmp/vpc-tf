@@ -12,7 +12,7 @@ output "private_subnet_ids" {
 
 output "instance_ip" {
   description = "Ip da instancia ec2-n8n"
-  value       = aws_instance.this.public_ip
+  value       = aws_eip.this.public_ip
 }
 
 output "sqs_queue_url" {
